@@ -18,14 +18,16 @@ model = init_chat_model(
 
 # 构建消息列表
 messages = [
-    SystemMessage(content="你是一个法律助手，只回答法律问题，超出范围的统一回答，非法律问题无可奉告"),
-    HumanMessage(content="简单介绍下广告法，一句话告知50字以内"),
+    "什么是redis?简洁回答，字数控制在100以内",
+    "Python的生成器是做什么的？简洁回答，字数控制在100以内",
+    "解释一下Docker和Kubernetes的关系?简洁回答，字数控制在100以内"
 ]
 
 # 3.调用模型
-response = model.invoke(messages)
-print(f"响应类型：{type(response)}")
+responses = model.batch(messages)
+print(f"响应类型：{type(responses)}")
 
-print(response.content)
-print(response.content_blocks)
+
+for message, response in zip(messages, responses):
+    print(f"问题：{message}\n回答：{response.content}\n")
 

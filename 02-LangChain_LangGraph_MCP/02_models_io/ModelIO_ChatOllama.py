@@ -10,7 +10,7 @@ API_URL = os.getenv("OLLAMA_API_URL")
 
 model = ChatOllama(
     base_url=API_URL,
-    model="modelscope.cn/unsloth/Qwen3.5-35B-A3B-GGUF:Q4_K_M",
+    model="qwen3.5:9b",
     reasoning=False,
 )
 
