@@ -1,0 +1,18 @@
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environment directories
+.venv/
+venv/
+env/
+
+# Ignore IDE-specific files and directories
+.idea/
+*.iml
+*.ipynb_checkpoints
+
+# Ignore environment variable files
+.env
