@@ -1,4 +1,4 @@
-import dotenv
+
 from langchain.chat_models import init_chat_model
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -6,6 +6,7 @@ from loguru import logger
 import os
 from langchain_core.runnables import RunnableParallel
 
+import dotenv
 dotenv.load_dotenv()
 API_KEY = os.getenv("QWEN_API_KEY")
 API_RUL = os.getenv("QWEN_API_URL")
