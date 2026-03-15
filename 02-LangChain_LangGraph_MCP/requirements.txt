@@ -1,0 +1,13 @@
+langchain==1.2.12
+langchain-core==1.2.19
+langchain-community==0.4.1
+langchain-openai==1.1.11
+langchain-deepseek==1.0.1
+langchain-ollama==1.0.1
+openai==2.28.0
+python-dotenv==1.2.2
+loguru==0.7.3
+pydantic==2.12.5
+dashscope==1.25.13
+grandalf==0.8
+pyparsing==3.3.2
