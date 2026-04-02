@@ -1,0 +1,23 @@
+# Python virtual environment
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE-specific files and directories
+.idea/
+*.iml
+*.ipynb_checkpoints/
+
+# Log files and temporary files
+logs/
+*.log
+*.tmp
+
+# Configuration files with sensitive information
+conf/app_config.yaml
+
+
+#
+*.docker/
