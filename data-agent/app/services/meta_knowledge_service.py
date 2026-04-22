@@ -7,6 +7,7 @@ from omegaconf import OmegaConf
 from app.conf.meta_config import MetaConfig
 from app.entities.column_info import ColumnInfo
 from app.entities.table_info import TableInfo
+from app.entities.value_info import ValueInfo
 from app.models import column_info
 from app.models.column_info import ColumnInfoMySQL
 from app.models.table_info import TableInfoMySQL
@@ -77,7 +78,7 @@ class MetaKnowledgeService:
             column_types = await self.dw_mysql_repository.get_column_type(table.name)
             for column in table.columns:
                 # 查询字段取值示例
-                column_examples = await  self.dw_mysql_repository.get_column_examples(table.name, column.name)
+                column_examples = await  self.dw_mysql_repository.get_column_values(table.name, column.name)
                 column_info = ColumnInfo(id=f"{table.name}.{column.name}",
                                          name=column.name,
                                          type=column_types[column.name],
@@ -140,3 +141,40 @@ class MetaKnowledgeService:
 
     async def _save_values_to_es(self, meta_config):
         await self.value_es_repository.ensure_index()
+
+        values_infos: list[ValueInfo] = []
+
+        for table in meta_config.tables:
+            for column in table.columns:
+                if column.sync:
+                    # 查询字段取值
+                    current_column_values = await self.dw_mysql_repository.get_column_values(table.name, column.name, limit=100000)
+
+                    current_column_infos = [
+                        ValueInfo(id=f"{table.name}.{column.name}.{current_column_value}",
+                                  value=current_column_value,
+                                  column_id=f"{table.name}.{column.name}")
+                        for current_column_value in current_column_values
+                    ]
+
+                    values_infos.extend(current_column_infos)
+
+        self.value_es_repository.index(values_infos)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

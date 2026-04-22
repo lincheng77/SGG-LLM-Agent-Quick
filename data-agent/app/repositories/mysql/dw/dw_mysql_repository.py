@@ -16,7 +16,7 @@ class DWMySQLRepository:
         # {order_id:varchar(30), customer_id:varchar(30)}
         return  {row["Field"]: row["Type"] for row in result_dict}
 
-    async def get_column_examples(self, table_name, column_name, limit=10):
+    async def get_column_values(self, table_name, column_name, limit=10):
         sql = f"select distinct {column_name} from {table_name} limit {limit}"
         result = await self.session.execute(text(sql))
         return [row[0] for row in result.fetchall()]
