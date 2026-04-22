@@ -20,4 +20,4 @@ conf/app_config.yaml
 
 
 #
-.docker/
+docker/
