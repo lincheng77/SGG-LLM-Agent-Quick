@@ -59,6 +59,8 @@ class MetaKnowledgeService:
             # 3.1 将指标信息保存到meta数据库中
             for metric in meta_config.metrics:
                 pass
+
+
             # 3.2 将指标信息建立向量索引
 
 
@@ -93,8 +95,6 @@ class MetaKnowledgeService:
             self.meta_mysql_repository.save_column_infos(column_infos)
             
         return column_infos
-    
-    
 
     async def _save_columns_to_qdrant(self, column_infos: list[ColumnInfo]):
         await self.column_qdrant_repository.ensure_collection()
@@ -159,7 +159,7 @@ class MetaKnowledgeService:
 
                     values_infos.extend(current_column_infos)
 
-        self.value_es_repository.index(values_infos)
+        await self.value_es_repository.index(values_infos)
 
 
 
