@@ -17,6 +17,7 @@ from app.repositories.mysql.meta import meta_mysql_repository
 from app.repositories.mysql.meta.meta_mysql_repository import MetaMySQLRepository
 from app.repositories.qdrant import column_qdrant_repository
 from app.repositories.qdrant.column_qdrant_repository import ColumnQdrantRepository
+from app.repositories.qdrant.metric_qdrant_repository import MetricQdrantRepository
 from app.services import meta_knowledge_service
 from app.services.meta_knowledge_service import MetaKnowledgeService
 
@@ -35,6 +36,7 @@ async def build(config_path: Path):
         column_qdrant_repository = ColumnQdrantRepository(qdrant_client_manager.client)
         embedding_client = embedding_client_manager.client
         value_es_repository = ValueEsRepository(es_client_manager.client)
+        metric_qdrant_repository = MetricQdrantRepository(qdrant_client_manager.client)
 
         mete_knowledge_service = MetaKnowledgeService(
             meta_mysql_repository=meta_mysql_repository,
@@ -42,6 +44,7 @@ async def build(config_path: Path):
             column_qdrant_repository=column_qdrant_repository,
             embedding_client=embedding_client,
             value_es_repository = value_es_repository,
+            metric_qdrant_repository=metric_qdrant_repository
         )
         await  mete_knowledge_service.build(config_path)
 

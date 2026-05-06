@@ -1,6 +1,5 @@
 import asyncio
 import sys
-from base64 import main
 from pathlib import Path
 
 from loguru import logger
