@@ -4,6 +4,8 @@ from app.entities.column_info import ColumnInfo
 from app.entities.column_metric import ColumnMetric
 from app.entities.metric_info import MetricInfo
 from app.entities.table_info import TableInfo
+from app.models.column_info import ColumnInfoMySQL
+from app.models.table_info import TableInfoMySQL
 from app.repositories.mysql.meta.mappers.column_metric_mapper import ColumnMetricMapper
 from app.repositories.mysql.meta.mappers.column_info_mapper import ColumnInfoMapper
 from app.repositories.mysql.meta.mappers.metric_info_mapper import MetricInfoMapper
@@ -25,3 +27,18 @@ class MetaMySQLRepository:
 
     def save_column_metrics(self, column_metrics: list[ColumnMetric]):
         self.session.add_all([ColumnMetricMapper.to_model(column_metric) for column_metric in column_metrics])
+
+    async def get_column_info_by_id(self, id) -> ColumnInfo | None:
+
+        column_info_mysql: ColumnInfoMySQL | None = await self.session.get(ColumnInfoMySQL, id)
+        if column_info_mysql:
+            return ColumnInfoMapper.to_entity(column_info_mysql)
+        else:
+            return None
+
+    async def get_table_info_by_id(self, table_id) -> TableInfo | None:
+        table_info_mysql: ColumnInfoMySQL | None = await self.session.get(TableInfoMySQL, table_id)
+        if table_info_mysql:
+            return TableInfoMapper.to_entity(table_info_mysql)
+        else:
+            return None

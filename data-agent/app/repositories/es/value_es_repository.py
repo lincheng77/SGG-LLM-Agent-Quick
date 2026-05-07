@@ -2,6 +2,8 @@ from dataclasses import asdict
 
 from elasticsearch import AsyncElasticsearch
 
+from app.entities.value_info import ValueInfo
+
 
 class ValueEsRepository:
     index_name = "value_index"
@@ -30,3 +32,15 @@ class ValueEsRepository:
                 batch_operations.append(asdict(value_info))
             await self.client.bulk(operations=batch_operations)
 
+    async def search(self, keyword: str, score_threshold: float = 0.6, limit: int = 20):
+        resp = await self.client.search(
+            index=self.index_name,
+            query={
+                "match":{
+                    "value": keyword
+                }
+            },
+            size=limit,
+            min_score=score_threshold
+        )
+        return [ValueInfo(**hit['_source']) for hit in resp["hits"]["hits"]]
