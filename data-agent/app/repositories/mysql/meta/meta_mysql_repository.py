@@ -1,3 +1,4 @@
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.entities.column_info import ColumnInfo
@@ -42,3 +43,9 @@ class MetaMySQLRepository:
             return TableInfoMapper.to_entity(table_info_mysql)
         else:
             return None
+
+    async def get_key_columns_by_table_id(self, table_id):
+        sql = ("select * from column_info where table_id = :table_id and role in ('primary_key', 'foreign_key')")
+        result = await self.session.execute(text(sql), {"table_id": table_id})
+
+        return [ColumnInfo(**dict(row)) for row in result.mappings().fetchall()]

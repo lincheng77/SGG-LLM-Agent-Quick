@@ -45,19 +45,28 @@ async def merge_retrieved_info(state: DataAgentState, runtime: Runtime[DataAgent
         if value not in retrieved_column_info_map[column_id].examples:
             retrieved_column_info_map[column_id].examples.append(value)
 
-    # 1.3 按照表对字段信息进行分组，整理成目标格式
+    # 1.3.1 按照表对字段信息进行分组
     table_to_columns_map: dict[str, list[ColumnInfo]] = {}
     for column_info in retrieved_column_info_map.values():
         table_id = column_info.table_id
-
         # 确保表信息已存在
         if table_id not in table_to_columns_map:
             table_to_columns_map[table_id] = []
-
         # 将字段信息加入表信息中
         table_to_columns_map[table_id].append(column_info)
 
+    # 1.3.2 强制为每个表添加主外键字段
+    for table_id in table_to_columns_map.keys():
+        # 获取表主外键字段
+        key_columns: list[ColumnInfo] = await meta_mysql_repository.get_key_columns_by_table_id(table_id)
+        # 获取表已有字段
+        column_ids = [column_info.id for column_info in table_to_columns_map[table_id]]
+        # 将表中还没有的主外键字段加入表中
+        for key_column in key_columns:
+            if key_column.id not in column_ids:
+                table_to_columns_map[table_id].append(key_column)
 
+    # 1.3.3将表信息整理成目标格式
     table_info_states: list[TableInfoState] = []
     for table_id, column_infos in table_to_columns_map.items():
         table_info: TableInfo = await meta_mysql_repository.get_table_info_by_id(table_id)
