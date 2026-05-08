@@ -17,6 +17,7 @@ from app.prompt.prompt_loader import load_prompt
 
 async def filter_table(state: DataAgentState, runtime: Runtime[DataAgentContext]):
     writer = runtime.stream_writer
+    writer("过滤表格信息")
 
     query = state["query"]
     table_info_states = state["table_info_states"]

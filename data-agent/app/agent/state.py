@@ -2,6 +2,7 @@ from typing import TypedDict
 
 from app.entities.column_info import ColumnInfo
 from app.entities.metric_info import MetricInfo
+from app.entities.value_info import ValueInfo
 
 class ColumnInfoState(TypedDict):
     name: str
@@ -24,15 +25,32 @@ class MetricInfoState(TypedDict):
     relevant_columns: list[str]
     alias: list[str]
 
+
+class DateInfoState(TypedDict):
+    date: str
+    weekday: str
+    quarter: str
+
+
+class DBInfoState(TypedDict):
+    version: str
+    dialect: str
+
+
 class DataAgentState(TypedDict):
-    query: str #
-    keywords: list[str]
-    retrieved_column_infos: list[ColumnInfo]
-    retrieved_metric_infos: list[MetricInfo]
-    retrieved_value_infos: list[MetricInfo]
+    query: str  # 用户输入的查询
+    keywords: list[str]  # 抽取的关键词
 
+    retrieved_column_infos: list[ColumnInfo]  # 检索到的字段信息
+    retrieved_metric_infos: list[MetricInfo]  # 检索到的指标信息
+    retrieved_value_infos: list[ValueInfo]  # 检索到的取值信息
 
-    metric_info_states: list[MetricInfoState]
-    table_info_states: list[TableInfoState]
+    table_info_states: list[TableInfoState]  # 表信息
+    metric_info_states: list[MetricInfoState]  # 指标信息
 
-    error: str # 校验SQL是否错误
+    date_info: DateInfoState  # 日期信息
+    db_info: DBInfoState  # 数据库信息
+
+    sql: str  # 生成的SQL
+
+    error: str  # 校验SQL时出现的错误信息

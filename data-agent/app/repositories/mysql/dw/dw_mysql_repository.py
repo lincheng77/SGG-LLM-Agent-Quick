@@ -2,6 +2,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 
+from app.agent.state import DBInfoState
+
+
 class DWMySQLRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
@@ -20,3 +23,12 @@ class DWMySQLRepository:
         sql = f"select distinct {column_name} from {table_name} limit {limit}"
         result = await self.session.execute(text(sql))
         return [row[0] for row in result.fetchall()]
+
+    async def get_db_info(self) -> DBInfoState:
+        sql = "select version()"
+        result = await self.session.execute(text(sql))
+        version = result.scalar()
+
+        dialect = self.session.bind.dialect.name
+
+        return DBInfoState(version=version, dialect=dialect)

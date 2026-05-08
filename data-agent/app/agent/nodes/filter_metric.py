@@ -15,6 +15,7 @@ from app.prompt.prompt_loader import load_prompt
 
 async def filter_metric(state: DataAgentState, runtime: Runtime[DataAgentContext]):
     writer = runtime.stream_writer
+    writer("过滤指标信息")
 
     query = state["query"]
     metric_info_states = state["metric_info_states"]
