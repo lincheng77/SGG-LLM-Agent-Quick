@@ -57,6 +57,6 @@
 {query}
 
 候选表及字段信息：
-{table_infos}
+{table_info_states}
 
 输出：

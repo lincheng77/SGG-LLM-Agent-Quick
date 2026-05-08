@@ -31,7 +31,8 @@ class DataAgentState(TypedDict):
     retrieved_metric_infos: list[MetricInfo]
     retrieved_value_infos: list[MetricInfo]
 
-    column_infos: list[ColumnInfoState]
-    metric_infos: list[MetricInfoState]
+
+    metric_info_states: list[MetricInfoState]
+    table_info_states: list[TableInfoState]
 
     error: str # 校验SQL是否错误
