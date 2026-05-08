@@ -3,10 +3,10 @@
 
 【上下文信息】
 可用数据表信息如下：
-{table_infos}
+{table_info_states}
 
 可参考的指标信息如下：
-{metric_infos}
+{metric_info_states}
 
 当前的时间信息如下：
 {date_info}
