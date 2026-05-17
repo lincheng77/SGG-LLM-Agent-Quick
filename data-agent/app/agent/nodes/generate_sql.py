@@ -33,7 +33,7 @@ async def generate_sql(state: DataAgentState, runtime: Runtime[DataAgentContext]
         "table_info_states": yaml.dump(table_info_states, allow_unicode= True, sort_keys=False),
         "metric_info_states": yaml.dump(metric_info_states, allow_unicode= True, sort_keys=False),
         "date_info": yaml.dump(date_info, allow_unicode= True, sort_keys=False),
-        "db_info": yaml.dump(query, allow_unicode= True, sort_keys=False),
+        "db_info": yaml.dump(db_info, allow_unicode= True, sort_keys=False),
         "query": query,
     })
 
