@@ -15,27 +15,34 @@ from app.prompt.prompt_loader import load_prompt
 
 async def filter_metric(state: DataAgentState, runtime: Runtime[DataAgentContext]):
     writer = runtime.stream_writer
-    writer("过滤指标信息")
+    step = "过滤指标信息"
+    writer({"type": "progress", "step": step, "status": "running"})
 
-    query = state["query"]
-    metric_info_states = state["metric_info_states"]
+    try:
+        query = state["query"]
+        metric_info_states = state["metric_info_states"]
 
-    # 借助LLM扩展关键词
-    prompt = PromptTemplate(template=load_prompt("filter_metric_info"), input_variables=["query", 'metric_info_states'])
-    output_parser = JsonOutputParser()
-    chain = prompt | llm | output_parser
+        # 借助LLM扩展关键词
+        prompt = PromptTemplate(template=load_prompt("filter_metric_info"), input_variables=["query", 'metric_info_states'])
+        output_parser = JsonOutputParser()
+        chain = prompt | llm | output_parser
 
-    reslut = await chain.ainvoke({
-        "query": query,
-        "metric_info_states": yaml.dump(
-            metric_info_states,
-            allow_unicode=True,  # 保留中文字符，避免转义成 \uXXXX
-            sort_keys=False)
-    })
+        reslut = await chain.ainvoke({
+            "query": query,
+            "metric_info_states": yaml.dump(
+                metric_info_states,
+                allow_unicode=True,  # 保留中文字符，避免转义成 \uXXXX
+                sort_keys=False)
+        })
 
-    filtered_metric_info_states = [metric_info_state for metric_info_state in metric_info_states if
-                                   metric_info_state['name'] in reslut]
+        filtered_metric_info_states = [metric_info_state for metric_info_state in metric_info_states if
+                                       metric_info_state['name'] in reslut]
 
-    logger.info(
-        f"过滤后的指标信息：{[filtered_table_info_state['name'] for filtered_table_info_state in filtered_metric_info_states]}")
-    return {"metric_info_states": filtered_metric_info_states}
+        writer({"type": "progress", "step": step, "status": "success"})
+        logger.info(
+            f"过滤后的指标信息：{[filtered_table_info_state['name'] for filtered_table_info_state in filtered_metric_info_states]}")
+        return {"metric_info_states": filtered_metric_info_states}
+    except Exception as e:
+        logger.error(f"过滤指标信息失败：{e}")
+        writer({"type": "progress", "step": step, "status": "error"})
+        raise

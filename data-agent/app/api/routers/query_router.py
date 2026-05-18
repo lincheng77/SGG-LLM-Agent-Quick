@@ -21,15 +21,15 @@ from app.services.query_service import QueryService
 query_router = APIRouter()
 
 
-async def fake_streamer():
-    for i in range(10):
-        await asyncio.sleep(1)
-        yield f"data: step:{i}\n\n"
-
-
-async def fake_steamer():
-    async for chunk in fake_streamer():
-        yield chunk
+# async def fake_streamer():
+#     for i in range(10):
+#         await asyncio.sleep(1)
+#         yield f"data: step:{i}\n\n"
+#
+#
+# async def fake_steamer():
+#     async for chunk in fake_streamer():
+#         yield chunk
 
 
 async def get_meta_session():

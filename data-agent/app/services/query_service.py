@@ -1,3 +1,4 @@
+import json
 from collections.abc import AsyncIterator
 
 from fastapi import Depends
@@ -44,5 +45,8 @@ class QueryService:
                                    meta_mysql_repository=self.meta_mysql_repository,
                                    dw_mysql_repository=self.dw_mysql_repository)
 
-        async for chunk in graph.astream(input=state, context=context, stream_mode="custom"):
-            yield chunk
+        try:
+            async for chunk in graph.astream(input=state, context=context, stream_mode="custom"):
+                yield f"data: {json.dumps(chunk, ensure_ascii=False)}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'type': 'error', 'message': str(e)}, ensure_ascii=False)}\n\n"

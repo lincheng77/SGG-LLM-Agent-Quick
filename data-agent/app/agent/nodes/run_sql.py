@@ -9,12 +9,20 @@ from app.core.log import logger
 
 async def run_sql(state: DataAgentState, runtime: Runtime[DataAgentContext]):
     writer = runtime.stream_writer
-    writer("执行SQL")
-    await asyncio.sleep(1)
+    step = "执行SQL"
+    writer({"type": "progress", "step": step, "status": "running"})
 
-    sql = state["sql"]
-    dw_mysql_repository = runtime.context["dw_mysql_repository"]
+    try:
+        await asyncio.sleep(1)
 
-    result = await dw_mysql_repository.run(sql)
+        sql = state["sql"]
+        dw_mysql_repository = runtime.context["dw_mysql_repository"]
 
-    logger.info(f"SQL执行结果：{result}")
+        result = await dw_mysql_repository.run(sql)
+
+        writer({"type": "progress", "step": step, "status": "success"})
+        logger.info(f"SQL执行结果：{result}")
+    except Exception as e:
+        logger.error(f"执行SQL失败：{e}")
+        writer({"type": "progress", "step": step, "status": "error"})
+        raise

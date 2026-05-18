@@ -15,34 +15,40 @@ from app.prompt.prompt_loader import load_prompt
 
 async def correct_sql(state: DataAgentState, runtime: Runtime[DataAgentContext]):
     writer = runtime.stream_writer
-    writer("校正SQL")
+    step = "校正SQL"
+    writer({"type": "progress", "step": step, "status": "running"})
 
-    table_info_states = state["table_info_states"]
-    metric_info_states = state["metric_info_states"]
-    date_info = state["date_info"]
-    db_info = state["db_info"]
-    query = state["query"]
-    sql = state["sql"]
-    error = state["error"]
+    try:
+        table_info_states = state["table_info_states"]
+        metric_info_states = state["metric_info_states"]
+        date_info = state["date_info"]
+        db_info = state["db_info"]
+        query = state["query"]
+        sql = state["sql"]
+        error = state["error"]
 
-    prompt = PromptTemplate(template=load_prompt("correct_sql"),
-                            input_variables=["table_info_states", 'metric_info_states',
-                                             'date_info', 'db_info', 'query',
-                                             'sql', 'error'])
-    output_parser = StrOutputParser()
-    chain = prompt | llm | output_parser
+        prompt = PromptTemplate(template=load_prompt("correct_sql"),
+                                input_variables=["table_info_states", 'metric_info_states',
+                                                 'date_info', 'db_info', 'query',
+                                                 'sql', 'error'])
+        output_parser = StrOutputParser()
+        chain = prompt | llm | output_parser
 
-    result = await chain.ainvoke({
-        "table_info_states": yaml.dump(table_info_states, allow_unicode=True, sort_keys=False),
-        "metric_info_states": yaml.dump(metric_info_states, allow_unicode=True, sort_keys=False),
-        "date_info": yaml.dump(date_info, allow_unicode=True, sort_keys=False),
-        "db_info": yaml.dump(query, allow_unicode=True, sort_keys=False),
-        "query": query,
-        "sql": sql,
-        "error": error
-    })
+        result = await chain.ainvoke({
+            "table_info_states": yaml.dump(table_info_states, allow_unicode=True, sort_keys=False),
+            "metric_info_states": yaml.dump(metric_info_states, allow_unicode=True, sort_keys=False),
+            "date_info": yaml.dump(date_info, allow_unicode=True, sort_keys=False),
+            "db_info": yaml.dump(db_info, allow_unicode=True, sort_keys=False),
+            "query": query,
+            "sql": sql,
+            "error": error
+        })
 
+        writer({"type": "progress", "step": step, "status": "success"})
+        logger.info(f"校正后的SQL：{result}")
 
-    logger.info(f"校正后的SQL：{result}")
-
-    return {"sql": result}
+        return {"sql": result}
+    except Exception as e:
+        logger.error(f"校正SQL失败：{e}")
+        writer({"type": "progress", "step": step, "status": "error"})
+        raise
