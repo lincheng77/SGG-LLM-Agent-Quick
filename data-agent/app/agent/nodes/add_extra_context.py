@@ -1,4 +1,3 @@
-import asyncio
 from datetime import date
 
 from app.agent.context import DataAgentContext
@@ -13,8 +12,6 @@ async def add_extra_context(state: DataAgentState, runtime: Runtime[DataAgentCon
     writer({"type": "progress", "step": step, "status": "running"})
 
     try:
-        await asyncio.sleep(1)
-
         dw_mysql_repository = runtime.context["dw_mysql_repository"]
 
         today = date.today()

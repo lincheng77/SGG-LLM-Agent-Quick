@@ -1,5 +1,3 @@
-import asyncio
-
 import jieba.analyse
 
 from app.agent.context import DataAgentContext

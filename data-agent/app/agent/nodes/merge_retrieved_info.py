@@ -1,5 +1,3 @@
-import asyncio
-
 from app.agent.context import DataAgentContext
 from app.agent.state import DataAgentState, ColumnInfoState, TableInfoState, MetricInfoState
 from langgraph.runtime import Runtime

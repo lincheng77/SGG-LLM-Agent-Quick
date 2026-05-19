@@ -1,4 +1,3 @@
-import asyncio
 from idlelib import query
 
 import yaml
